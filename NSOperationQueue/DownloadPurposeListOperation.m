@@ -2,7 +2,7 @@
 //  DownloadPurposeListOperation.m
 //  NSOperationQueue
 //
-//  Created by Raphael-Alexander Berendes on 8/9/18.
+//  Created by Raphael-Alexander Berendes on 8/10/18.
 //  Copyright © 2018 Raphael-Alexander Berendes. All rights reserved.
 //
 
@@ -10,91 +10,106 @@
 
 #import "DownloadVendorListOperation.h"
 
-@protocol DownloadPurposeListOperationDelegate
-- (void)shitIsReadyYo;
-@end
-
 @interface DownloadPurposeListOperation()
-@property NSURLSessionTask* URLsessionTask;
-@property NSURL* URL;
-@property NSString* languageCode;
+// 'executing' and 'finished' exist in NSOperation, but are readonly
+@property (atomic, assign) BOOL _executing;
+@property (atomic, assign) BOOL _finished;
 @property NSUInteger vendorListVersion;
+@property NSURL* URL;
 @end
 
 @implementation DownloadPurposeListOperation
 
-- (instancetype)init
+- (void) start;
 {
-    self = [super init];
-    return self;
-}
-
-- (NSURLSessionTask*)sessionTaskWithURL:(NSURL*)URL
-{
-    NSURLRequest* req = [NSURLRequest requestWithURL:URL];
-    NSURLSession* dlSession = NSURLSession.sharedSession;
-    NSURLSessionTask* task = [dlSession dataTaskWithRequest:req completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error){
-        
-        if (error) {
-            NSLog(@"Error while downloading: %@", error);
-            [self cancel];
-            return;
-        }
-        NSError* serializationError;
-        NSDictionary* list = [NSJSONSerialization JSONObjectWithData:data
-                                                             options:NSJSONReadingMutableContainers
-                                                               error:&serializationError];
-        if (!list) {
-            NSLog(@"List could not be deserialized.");
-            [self cancel];
-            return;
-        }
-        
-        NSLog(@"FINISHED DOWNLOAD PURPOSE LIST OPERATION");
-        [self notify];
-        [super start];
-    }];
+    if ([self isCancelled])
+    {
+        // Move the operation to the finished state if it is canceled.
+        [self willChangeValueForKey:@"isFinished"];
+        self._finished = YES;
+        [self didChangeValueForKey:@"isFinished"];
+        return;
+    }
     
-    return task;
-}
-
-- (void)notify
-{
-    NSNotificationCenter* notificationCenter = [NSNotificationCenter defaultCenter];
-    [notificationCenter postNotificationName:@"PurposesDownloaded" object:nil userInfo:nil];
-}
-
-- (void)updateURL
-{
-    self.URL = [NSURL URLWithString:[NSString stringWithFormat:@"https://vendorlist.consensu.org/v-%lu/purposes-%@.json", (unsigned long)self.vendorListVersion, self.languageCode]];
-}
-
-- (void)start
-{
-    NSLog(@"STARTING DOWNLOAD PURPOSE LIST OPERATION");
+    // If the operation is not canceled, begin executing the task.
+    [self willChangeValueForKey:@"isExecuting"];
+    [NSThread detachNewThreadSelector:@selector(main) toTarget:self withObject:nil];
+    self._executing = YES;
+    [self didChangeValueForKey:@"isExecuting"];
     
-    DownloadVendorListOperation* downloadVendorListOperation;
+}
+
+- (void) main;
+{
+    if ([self isCancelled]) {
+        return;
+    }
+    DownloadVendorListOperation* downloadVendorList;
     for (NSOperation* operation in self.dependencies) {
         if ([operation isKindOfClass:[DownloadVendorListOperation class]]) {
-            downloadVendorListOperation = (DownloadVendorListOperation*)operation;
+            downloadVendorList = (DownloadVendorListOperation*)operation;
         }
     }
-    self.vendorListVersion = downloadVendorListOperation.vendorListVersion;
-    self.languageCode = [[NSLocale currentLocale] languageCode];
-    if (!self.vendorListVersion && !self.languageCode) {
-        NSLog(@"DOWNLOAD PURPOSE LIST OPERATION CANCELED");
+    self.vendorListVersion = downloadVendorList.vendorListVersion;
+    if (!self.vendorListVersion || [[[NSLocale currentLocale] languageCode] isEqualToString:@"en"]) {
         [self cancel];
         return;
     }
     [self updateURL];
-    self.URLsessionTask = [self sessionTaskWithURL:self.URL];
-    [self.URLsessionTask resume];
+    [self download];
 }
 
-- (void)cancel
+- (void)updateURL
 {
-    [super cancel];
-    [self.URLsessionTask cancel];
+    NSString* languageCode = [[NSLocale currentLocale] languageCode];
+    self.URL = [NSURL URLWithString:[NSString stringWithFormat:@"https://vendorlist.consensu.org/v-%lu/purposes-%@.json", self.vendorListVersion, languageCode]];
+}
+
+- (void)download
+{
+    NSURLRequest* req = [NSURLRequest requestWithURL:self.URL];
+    NSURLSession* dlSession = NSURLSession.sharedSession;
+    NSURLSessionTask* task = [dlSession dataTaskWithRequest:req completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error){
+        
+        if (error) {
+            return;
+        }
+        NSError* serializationError;
+        NSDictionary* purposeList = [NSJSONSerialization JSONObjectWithData:data
+                                                                   options:NSJSONReadingMutableContainers
+                                                                     error:&serializationError];
+        if (!purposeList) {
+            return;
+        }
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"DidDownloadPurposeList" object:nil userInfo:@{@"purposeList" : purposeList}];
+        [self completeOperation];
+    }];
+    
+    [task resume];
+}
+
+- (BOOL) isAsynchronous;
+{
+    return YES;
+}
+
+- (BOOL)isExecuting {
+    return self._executing;
+}
+
+- (BOOL)isFinished {
+    return self._finished;
+}
+
+- (void)completeOperation {
+    [self willChangeValueForKey:@"isFinished"];
+    [self willChangeValueForKey:@"isExecuting"];
+    
+    self._executing = NO;
+    self._finished = YES;
+    
+    [self didChangeValueForKey:@"isExecuting"];
+    [self didChangeValueForKey:@"isFinished"];
 }
 
 @end

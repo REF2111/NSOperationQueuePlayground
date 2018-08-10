@@ -25,19 +25,10 @@
                                     <action selector="startOperations:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Rgi-9p-PHA"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Jf1-fX-v0h">
-                                <rect key="frame" x="112" y="368" width="151" height="30"/>
-                                <state key="normal" title="Leave Dispatch Group"/>
-                                <connections>
-                                    <action selector="leaveDispatchGroup:" destination="BYZ-38-t0r" eventType="touchUpInside" id="XC6-Jl-KPX"/>
-                                </connections>
-                            </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="R6X-yk-i6O" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="Syf-iF-ZCk"/>
-                            <constraint firstItem="Jf1-fX-v0h" firstAttribute="centerX" secondItem="R6X-yk-i6O" secondAttribute="centerX" id="deD-8r-kJW"/>
-                            <constraint firstItem="Jf1-fX-v0h" firstAttribute="top" secondItem="R6X-yk-i6O" secondAttribute="bottom" constant="20" id="e2g-uS-3rd"/>
                             <constraint firstItem="R6X-yk-i6O" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="tym-Gq-3B4"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>

@@ -18,6 +18,7 @@ typedef enum {
     DeviceLanguageIsEnglish,
     DeviceLanguageNotAvailableForDownload,
     DownloadFailed,
+    VendorListDownloadFailed
 } PurposeListNotAvailableReason;
 
 @interface ViewController ()
@@ -31,6 +32,7 @@ typedef enum {
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.purposeListNotAvailableReason = VendorListDownloadFailed;
     [self setupNotificationObservers];
 }
 
@@ -45,6 +47,9 @@ typedef enum {
             break;
         case DownloadFailed:
             return @"Download failed";
+            break;
+        case VendorListDownloadFailed:
+            return @"Vendor list download failed";
             break;
     }
 }

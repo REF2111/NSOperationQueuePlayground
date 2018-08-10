@@ -10,6 +10,7 @@
 
 @interface ReadVendorListFromBundleOperation()
 // 'executing' and 'finished' exist in NSOperation, but are readonly
+@property (atomic, assign) BOOL _cancelled;
 @property (atomic, assign) BOOL _executing;
 @property (atomic, assign) BOOL _finished;
 @end
@@ -75,14 +76,27 @@
 
 - (void)cancel
 {
+    [self willChangeValueForKey:@"isCancelled"];
+    [self willChangeValueForKey:@"isExecuting"];
     [self willChangeValueForKey:@"isFinished"];
+    
+    self._cancelled = YES;
+    self._executing = NO;
     self._finished = YES;
+    
+    [self didChangeValueForKey:@"isCancelled"];
+    [self didChangeValueForKey:@"isExecuting"];
     [self didChangeValueForKey:@"isFinished"];
 }
 
 - (BOOL) isAsynchronous;
 {
     return YES;
+}
+
+- (BOOL)isCancelled
+{
+    return self._cancelled;
 }
 
 - (BOOL)isExecuting {

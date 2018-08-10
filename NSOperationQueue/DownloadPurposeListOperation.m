@@ -77,6 +77,13 @@
     NSURLSession* dlSession = NSURLSession.sharedSession;
     NSURLSessionTask* task = [dlSession dataTaskWithRequest:req completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error){
         
+        NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
+        if (httpResponse.statusCode == 403) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"LanguageNotAvailableForPurpose" object:nil userInfo:nil];
+            [self cancel];
+            return;
+        }
+        
         if (error) {
             [[NSNotificationCenter defaultCenter] postNotificationName:@"PurposeListDownloadFailed" object:nil userInfo:nil];
             [self cancel];

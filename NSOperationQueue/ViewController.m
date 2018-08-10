@@ -39,7 +39,7 @@
     }];
     
     [[NSNotificationCenter defaultCenter] addObserverForName:@"VendorListDownloadFailed" object:nil queue:NSOperationQueue.mainQueue usingBlock:^(NSNotification * _Nonnull note) {
-        NSLog(@"VendorListDownloadTimedOut");
+        NSLog(@"VendorListDownloadFailed");
     }];
     
     [[NSNotificationCenter defaultCenter] addObserverForName:@"DidDownloadPurposeList" object:nil queue:NSOperationQueue.mainQueue usingBlock:^(NSNotification * _Nonnull note) {
@@ -47,12 +47,17 @@
     }];
     
     [[NSNotificationCenter defaultCenter] addObserverForName:@"PurposeListDownloadFailed" object:nil queue:NSOperationQueue.mainQueue usingBlock:^(NSNotification * _Nonnull note) {
-        NSLog(@"PurposeListDownloadTimedOut");
+        NSLog(@"PurposeListDownloadFailed");
     }];
     
     [[NSNotificationCenter defaultCenter] addObserverForName:@"PurposeListDownloadNotNecessary" object:nil queue:NSOperationQueue.mainQueue usingBlock:^(NSNotification * _Nonnull note) {
         NSLog(@"PurposeListDownloadNotNecessary");
     }];
+    
+    [[NSNotificationCenter defaultCenter] addObserverForName:@"LanguageNotAvailableForPurpose" object:nil queue:NSOperationQueue.mainQueue usingBlock:^(NSNotification * _Nonnull note) {
+        NSLog(@"LanguageNotAvailableForPurpose");
+    }];
+    
 }
 
 - (IBAction)startOperations:(UIButton *)sender {

@@ -8,6 +8,10 @@
 
 #import "InternetConnectivityCheckOperation.h"
 
+#import <SystemConfiguration/SystemConfiguration.h>
+#import "Reachability.h"
+
+
 @implementation InternetConnectivityCheckOperation
 
 
@@ -17,8 +21,14 @@
         return;
     }
     
+    Reachability* reachability = [Reachability reachabilityForInternetConnection];
+    NetworkStatus remoteHostStatus = [reachability currentReachabilityStatus];
     
-    
+    if (remoteHostStatus == NotReachable) {
+        NSLog(@"No internet connection");
+        [self cancel];
+        return;
+    }
 }
 
 

@@ -17,6 +17,7 @@
 		64593D86211D940100617D31 /* DownloadPurposeListOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 64593D85211D940100617D31 /* DownloadPurposeListOperation.m */; };
 		64593D89211DA4C800617D31 /* ReadVendorListFromBundleOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 64593D88211DA4C800617D31 /* ReadVendorListFromBundleOperation.m */; };
 		64593D8F211DA93A00617D31 /* InternetConnectivityCheckOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 64593D8E211DA93A00617D31 /* InternetConnectivityCheckOperation.m */; };
+		64593D92211DB05600617D31 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 64593D90211DB05600617D31 /* Reachability.m */; };
 		64DC1FD5211B32F400D0EDAC /* Resources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 64DC1FD4211B32F400D0EDAC /* Resources.bundle */; };
 /* End PBXBuildFile section */
 
@@ -39,6 +40,8 @@
 		64593D88211DA4C800617D31 /* ReadVendorListFromBundleOperation.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ReadVendorListFromBundleOperation.m; sourceTree = "<group>"; };
 		64593D8D211DA93A00617D31 /* InternetConnectivityCheckOperation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = InternetConnectivityCheckOperation.h; sourceTree = "<group>"; };
 		64593D8E211DA93A00617D31 /* InternetConnectivityCheckOperation.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = InternetConnectivityCheckOperation.m; sourceTree = "<group>"; };
+		64593D90211DB05600617D31 /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
+		64593D91211DB05600617D31 /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
 		64DC1FD4211B32F400D0EDAC /* Resources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = Resources.bundle; path = NSOperationQueue/Resources.bundle; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -81,6 +84,8 @@
 				64593D82211D93CA00617D31 /* DownloadVendorListOperation.m */,
 				64593D87211DA4C800617D31 /* ReadVendorListFromBundleOperation.h */,
 				64593D88211DA4C800617D31 /* ReadVendorListFromBundleOperation.m */,
+				64593D91211DB05600617D31 /* Reachability.h */,
+				64593D90211DB05600617D31 /* Reachability.m */,
 				6434914C21146FBD00E4AC61 /* ViewController.h */,
 				6434914D21146FBD00E4AC61 /* ViewController.m */,
 				6434914F21146FBD00E4AC61 /* Main.storyboard */,
@@ -167,6 +172,7 @@
 			files = (
 				6434914E21146FBD00E4AC61 /* ViewController.m in Sources */,
 				64593D86211D940100617D31 /* DownloadPurposeListOperation.m in Sources */,
+				64593D92211DB05600617D31 /* Reachability.m in Sources */,
 				6434915921146FBF00E4AC61 /* main.m in Sources */,
 				6434914B21146FBD00E4AC61 /* AppDelegate.m in Sources */,
 				64593D83211D93CA00617D31 /* DownloadVendorListOperation.m in Sources */,

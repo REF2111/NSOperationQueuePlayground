@@ -1,20 +1,20 @@
 //
-//  DownloadVendorListOperation.m
+//  ReadVendorListFromBundleOperation.m
 //  NSOperationQueue
 //
 //  Created by Raphael-Alexander Berendes on 8/10/18.
 //  Copyright © 2018 Raphael-Alexander Berendes. All rights reserved.
 //
 
-#import "DownloadVendorListOperation.h"
+#import "ReadVendorListFromBundleOperation.h"
 
-@interface DownloadVendorListOperation()
+@interface ReadVendorListFromBundleOperation()
 // 'executing' and 'finished' exist in NSOperation, but are readonly
 @property (atomic, assign) BOOL _executing;
 @property (atomic, assign) BOOL _finished;
 @end
 
-@implementation DownloadVendorListOperation
+@implementation ReadVendorListFromBundleOperation
 
 - (void) start;
 {
@@ -32,6 +32,7 @@
     [NSThread detachNewThreadSelector:@selector(main) toTarget:self withObject:nil];
     self._executing = YES;
     [self didChangeValueForKey:@"isExecuting"];
+    
 }
 
 - (void) main;
@@ -39,20 +40,25 @@
     if ([self isCancelled]) {
         return;
     }
-    [self download];
+    [self readVendorList];
 }
 
-- (void)download
+- (void)readVendorList
 {
-    NSURL* URL = [NSURL URLWithString:@"https://vendorlist.consensu.org/vendorlist.json"];
-    NSURLRequest* req = [NSURLRequest requestWithURL:URL];
-    NSURLSession* dlSession = NSURLSession.sharedSession;
-    NSURLSessionTask* task = [dlSession dataTaskWithRequest:req completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error){
-        
-        if (error) {
-            [self cancel];
-            return;
-        }
+    NSBundle* mainBundle = NSBundle.mainBundle;
+    NSString* vendorListStr = @"Resources.bundle/vendorlist.json";
+    NSString* vendorListPath = [mainBundle pathForResource:[vendorListStr stringByDeletingPathExtension] ofType:vendorListStr.pathExtension];
+    
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSURL *documentsURL = [NSURL URLWithString:vendorListPath];
+    
+    if(![fileManager fileExistsAtPath:documentsURL.path]) {
+        [self cancel];
+        return;
+    }
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+        NSData* data = [NSData dataWithContentsOfFile:vendorListPath];
         NSError* serializationError;
         NSDictionary* vendorList = [NSJSONSerialization JSONObjectWithData:data
                                                                    options:NSJSONReadingMutableContainers
@@ -62,18 +68,9 @@
             return;
         }
         
-        self.vendorListVersion = [self vendorListVersion:vendorList];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"DidDownloadVendorList" object:nil userInfo:nil];
         [self completeOperation];
-    }];
-    
-    [task resume];
-}
-
-- (NSUInteger)vendorListVersion:(nonnull NSDictionary*)vendorList
-{
-    NSUInteger vendorListVersion = [[vendorList objectForKey:@"vendorListVersion"] intValue];
-    return vendorListVersion;
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"DidReadVendorListFromBundle" object:nil];
+    });
 }
 
 - (void)cancel
@@ -108,3 +105,9 @@
 }
 
 @end
+
+
+
+
+
+

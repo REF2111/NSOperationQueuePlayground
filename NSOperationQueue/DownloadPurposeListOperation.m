@@ -72,6 +72,7 @@
     NSURLSessionTask* task = [dlSession dataTaskWithRequest:req completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error){
         
         if (error) {
+            [self cancel];
             return;
         }
         NSError* serializationError;
@@ -79,6 +80,7 @@
                                                                    options:NSJSONReadingMutableContainers
                                                                      error:&serializationError];
         if (!purposeList) {
+            [self cancel];
             return;
         }
         [[NSNotificationCenter defaultCenter] postNotificationName:@"DidDownloadPurposeList" object:nil userInfo:@{@"purposeList" : purposeList}];
@@ -86,6 +88,13 @@
     }];
     
     [task resume];
+}
+
+- (void)cancel
+{
+    [self willChangeValueForKey:@"isFinished"];
+    self._finished = YES;
+    [self didChangeValueForKey:@"isFinished"];
 }
 
 - (BOOL) isAsynchronous;

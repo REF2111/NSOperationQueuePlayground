@@ -10,6 +10,7 @@
 
 #import "DownloadPurposeListOperation.h"
 #import "DownloadVendorListOperation.h"
+#import "ReadVendorListFromBundleOperation.h"
 
 
 @interface ViewController ()
@@ -20,8 +21,16 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    [[NSNotificationCenter defaultCenter] addObserverForName:@"DidReadVendorListFromBundle" object:nil queue:NSOperationQueue.mainQueue usingBlock:^(NSNotification * _Nonnull note) {
+        NSLog(@"DidReadVendorListFromBundle");
+    }];
+    
+    [[NSNotificationCenter defaultCenter] addObserverForName:@"DidDownloadVendorList" object:nil queue:NSOperationQueue.mainQueue usingBlock:^(NSNotification * _Nonnull note) {
+        NSLog(@"DidDownloadVendorList");
+    }];
+    
     [[NSNotificationCenter defaultCenter] addObserverForName:@"DidDownloadPurposeList" object:nil queue:NSOperationQueue.mainQueue usingBlock:^(NSNotification * _Nonnull note) {
-        NSLog(@"I was notified about this purpose list: %@", note.userInfo[@"purposeList"]);
+        NSLog(@"DidDownloadPurposeList");
     }];
 }
 
@@ -33,13 +42,14 @@
 
 - (void)doTheStuffTheRightWay
 {
+    ReadVendorListFromBundleOperation* readVendorListFromBundle = [[ReadVendorListFromBundleOperation alloc] init];
     DownloadVendorListOperation* downloadVendorList = [[DownloadVendorListOperation alloc] init];
     DownloadPurposeListOperation* downloadPurposeList = [[DownloadPurposeListOperation alloc] init];
     
     [downloadPurposeList addDependency:downloadVendorList];
     
     NSOperationQueue* operationQueue = [[NSOperationQueue alloc] init];
-    [operationQueue addOperations:@[downloadVendorList, downloadPurposeList] waitUntilFinished:NO];
+    [operationQueue addOperations:@[readVendorListFromBundle, downloadVendorList, downloadPurposeList] waitUntilFinished:NO];
 }
 
 

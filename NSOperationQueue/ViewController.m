@@ -69,7 +69,6 @@ typedef enum {
     
     [[NSNotificationCenter defaultCenter] addObserverForName:@"DidDownloadVendorList" object:nil queue:NSOperationQueue.mainQueue usingBlock:^(NSNotification * _Nonnull note) {
         NSLog(@"DidDownloadVendorList");
-        
         self.vendorList = note.userInfo[@"vendorList"];
     }];
     
@@ -79,7 +78,6 @@ typedef enum {
     
     [[NSNotificationCenter defaultCenter] addObserverForName:@"DidDownloadPurposeList" object:nil queue:NSOperationQueue.mainQueue usingBlock:^(NSNotification * _Nonnull note) {
         NSLog(@"DidDownloadPurposeList");
-        
         self.purposeList = note.userInfo[@"purposeList"];
     }];
     

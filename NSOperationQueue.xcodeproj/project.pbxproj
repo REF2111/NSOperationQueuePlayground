@@ -13,6 +13,13 @@
 		6434915321146FBF00E4AC61 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6434915221146FBF00E4AC61 /* Assets.xcassets */; };
 		6434915621146FBF00E4AC61 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6434915421146FBF00E4AC61 /* LaunchScreen.storyboard */; };
 		6434915921146FBF00E4AC61 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6434915821146FBF00E4AC61 /* main.m */; };
+		64593D68211C3A9A00617D31 /* DownloadVendorListOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 64593D67211C3A9A00617D31 /* DownloadVendorListOperation.m */; };
+		64593D6B211C447100617D31 /* DownloadPurposeListOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 64593D6A211C447100617D31 /* DownloadPurposeListOperation.m */; };
+		64593D6E211C76B500617D31 /* ReadVendorListOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 64593D6D211C76B500617D31 /* ReadVendorListOperation.m */; };
+		64593D71211C7B6700617D31 /* OperationOne.m in Sources */ = {isa = PBXBuildFile; fileRef = 64593D70211C7B6700617D31 /* OperationOne.m */; };
+		64593D74211C7B7500617D31 /* OperationTwo.m in Sources */ = {isa = PBXBuildFile; fileRef = 64593D73211C7B7500617D31 /* OperationTwo.m */; };
+		64593D77211C88A000617D31 /* OperationThree.m in Sources */ = {isa = PBXBuildFile; fileRef = 64593D76211C88A000617D31 /* OperationThree.m */; };
+		64DC1FD5211B32F400D0EDAC /* Resources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 64DC1FD4211B32F400D0EDAC /* Resources.bundle */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +33,19 @@
 		6434915521146FBF00E4AC61 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		6434915721146FBF00E4AC61 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6434915821146FBF00E4AC61 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		64593D66211C3A9A00617D31 /* DownloadVendorListOperation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DownloadVendorListOperation.h; sourceTree = "<group>"; };
+		64593D67211C3A9A00617D31 /* DownloadVendorListOperation.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DownloadVendorListOperation.m; sourceTree = "<group>"; };
+		64593D69211C447100617D31 /* DownloadPurposeListOperation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DownloadPurposeListOperation.h; sourceTree = "<group>"; };
+		64593D6A211C447100617D31 /* DownloadPurposeListOperation.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DownloadPurposeListOperation.m; sourceTree = "<group>"; };
+		64593D6C211C76B500617D31 /* ReadVendorListOperation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ReadVendorListOperation.h; sourceTree = "<group>"; };
+		64593D6D211C76B500617D31 /* ReadVendorListOperation.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ReadVendorListOperation.m; sourceTree = "<group>"; };
+		64593D6F211C7B6700617D31 /* OperationOne.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OperationOne.h; sourceTree = "<group>"; };
+		64593D70211C7B6700617D31 /* OperationOne.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OperationOne.m; sourceTree = "<group>"; };
+		64593D72211C7B7500617D31 /* OperationTwo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OperationTwo.h; sourceTree = "<group>"; };
+		64593D73211C7B7500617D31 /* OperationTwo.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OperationTwo.m; sourceTree = "<group>"; };
+		64593D75211C88A000617D31 /* OperationThree.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OperationThree.h; sourceTree = "<group>"; };
+		64593D76211C88A000617D31 /* OperationThree.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OperationThree.m; sourceTree = "<group>"; };
+		64DC1FD4211B32F400D0EDAC /* Resources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = Resources.bundle; path = NSOperationQueue/Resources.bundle; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -42,6 +62,7 @@
 		6434913D21146FBD00E4AC61 = {
 			isa = PBXGroup;
 			children = (
+				64DC1FD4211B32F400D0EDAC /* Resources.bundle */,
 				6434914821146FBD00E4AC61 /* NSOperationQueue */,
 				6434914721146FBD00E4AC61 /* Products */,
 			);
@@ -60,6 +81,18 @@
 			children = (
 				6434914921146FBD00E4AC61 /* AppDelegate.h */,
 				6434914A21146FBD00E4AC61 /* AppDelegate.m */,
+				64593D69211C447100617D31 /* DownloadPurposeListOperation.h */,
+				64593D6A211C447100617D31 /* DownloadPurposeListOperation.m */,
+				64593D66211C3A9A00617D31 /* DownloadVendorListOperation.h */,
+				64593D67211C3A9A00617D31 /* DownloadVendorListOperation.m */,
+				64593D6F211C7B6700617D31 /* OperationOne.h */,
+				64593D70211C7B6700617D31 /* OperationOne.m */,
+				64593D72211C7B7500617D31 /* OperationTwo.h */,
+				64593D73211C7B7500617D31 /* OperationTwo.m */,
+				64593D75211C88A000617D31 /* OperationThree.h */,
+				64593D76211C88A000617D31 /* OperationThree.m */,
+				64593D6C211C76B500617D31 /* ReadVendorListOperation.h */,
+				64593D6D211C76B500617D31 /* ReadVendorListOperation.m */,
 				6434914C21146FBD00E4AC61 /* ViewController.h */,
 				6434914D21146FBD00E4AC61 /* ViewController.m */,
 				6434914F21146FBD00E4AC61 /* Main.storyboard */,
@@ -131,6 +164,7 @@
 				6434915621146FBF00E4AC61 /* LaunchScreen.storyboard in Resources */,
 				6434915321146FBF00E4AC61 /* Assets.xcassets in Resources */,
 				6434915121146FBD00E4AC61 /* Main.storyboard in Resources */,
+				64DC1FD5211B32F400D0EDAC /* Resources.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -143,7 +177,13 @@
 			files = (
 				6434914E21146FBD00E4AC61 /* ViewController.m in Sources */,
 				6434915921146FBF00E4AC61 /* main.m in Sources */,
+				64593D6E211C76B500617D31 /* ReadVendorListOperation.m in Sources */,
 				6434914B21146FBD00E4AC61 /* AppDelegate.m in Sources */,
+				64593D74211C7B7500617D31 /* OperationTwo.m in Sources */,
+				64593D6B211C447100617D31 /* DownloadPurposeListOperation.m in Sources */,
+				64593D68211C3A9A00617D31 /* DownloadVendorListOperation.m in Sources */,
+				64593D77211C88A000617D31 /* OperationThree.m in Sources */,
+				64593D71211C7B6700617D31 /* OperationOne.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -31,10 +31,7 @@
     
     if ([self isCancelled])
     {
-        // Move the operation to the finished state if it is canceled.
-        [self willChangeValueForKey:@"isFinished"];
-        self._finished = YES;
-        [self didChangeValueForKey:@"isFinished"];
+        [self cancel];
         return;
     }
     

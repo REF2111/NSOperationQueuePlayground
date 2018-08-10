@@ -116,9 +116,9 @@ typedef enum {
     if (self.operationQueue.operations.count == 0) {
         NSLog(@"\n");
         NSLog(@"Operation queue finished");
-        NSLog(@"Vendor list with version: %@", [self.vendorList objectForKey:@"vendorListVersion"]);
+        NSLog(@"Vendor list available with version: %@", [self.vendorList objectForKey:@"vendorListVersion"]);
         if (self.purposeList) {
-            NSLog(@"Purpose list with version: %@", [self.purposeList objectForKey:@"vendorListVersion"]);
+            NSLog(@"Purpose list available with version: %@", [self.purposeList objectForKey:@"vendorListVersion"]);
         } else {
             NSLog(@"Purpose list not available for reason: %@", [self getStringForPurposeListNotAvailableReason:self.purposeListNotAvailableReason]);
         }

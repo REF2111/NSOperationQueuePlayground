@@ -21,7 +21,11 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+    [self setupNotificationObservers];
+}
+
+- (void)setupNotificationObservers
+{
     [[NSNotificationCenter defaultCenter] addObserverForName:@"DidReadVendorListFromBundle" object:nil queue:NSOperationQueue.mainQueue usingBlock:^(NSNotification * _Nonnull note) {
         NSLog(@"DidReadVendorListFromBundle");
     }];
@@ -30,8 +34,16 @@
         NSLog(@"DidDownloadVendorList");
     }];
     
+    [[NSNotificationCenter defaultCenter] addObserverForName:@"VendorListDownloadTimedOut" object:nil queue:NSOperationQueue.mainQueue usingBlock:^(NSNotification * _Nonnull note) {
+        NSLog(@"VendorListDownloadTimedOut");
+    }];
+    
     [[NSNotificationCenter defaultCenter] addObserverForName:@"DidDownloadPurposeList" object:nil queue:NSOperationQueue.mainQueue usingBlock:^(NSNotification * _Nonnull note) {
         NSLog(@"DidDownloadPurposeList");
+    }];
+    
+    [[NSNotificationCenter defaultCenter] addObserverForName:@"PurposeListDownloadTimedOut" object:nil queue:NSOperationQueue.mainQueue usingBlock:^(NSNotification * _Nonnull note) {
+        NSLog(@"PurposeListDownloadTimedOut");
     }];
 }
 

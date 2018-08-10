@@ -74,11 +74,15 @@
 
 - (void)download
 {
-    NSURLRequest* req = [NSURLRequest requestWithURL:self.URL];
+    NSMutableURLRequest* req = [NSMutableURLRequest requestWithURL:self.URL];
+    req.timeoutInterval = 3;
     NSURLSession* dlSession = NSURLSession.sharedSession;
     NSURLSessionTask* task = [dlSession dataTaskWithRequest:req completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error){
         
         if (error) {
+            if (error.code == -1001) {
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"PurposeListDownloadTimedOut" object:nil userInfo:nil];
+            }
             [self cancel];
             return;
         }
@@ -90,6 +94,7 @@
             [self cancel];
             return;
         }
+        
         [[NSNotificationCenter defaultCenter] postNotificationName:@"DidDownloadPurposeList" object:nil userInfo:@{@"purposeList" : purposeList}];
         [self completeOperation];
     }];

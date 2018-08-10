@@ -82,6 +82,8 @@
 				64593D85211D940100617D31 /* DownloadPurposeListOperation.m */,
 				64593D81211D93CA00617D31 /* DownloadVendorListOperation.h */,
 				64593D82211D93CA00617D31 /* DownloadVendorListOperation.m */,
+				64593D8D211DA93A00617D31 /* InternetConnectivityCheckOperation.h */,
+				64593D8E211DA93A00617D31 /* InternetConnectivityCheckOperation.m */,
 				64593D87211DA4C800617D31 /* ReadVendorListFromBundleOperation.h */,
 				64593D88211DA4C800617D31 /* ReadVendorListFromBundleOperation.m */,
 				64593D91211DB05600617D31 /* Reachability.h */,
@@ -93,8 +95,6 @@
 				6434915421146FBF00E4AC61 /* LaunchScreen.storyboard */,
 				6434915721146FBF00E4AC61 /* Info.plist */,
 				6434915821146FBF00E4AC61 /* main.m */,
-				64593D8D211DA93A00617D31 /* InternetConnectivityCheckOperation.h */,
-				64593D8E211DA93A00617D31 /* InternetConnectivityCheckOperation.m */,
 			);
 			path = NSOperationQueue;
 			sourceTree = "<group>";

@@ -68,8 +68,8 @@
             return;
         }
         
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"DidReadVendorListFromBundle" object:nil userInfo:@{@"vendorList" : vendorList}];
         [self completeOperation];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"DidReadVendorListFromBundle" object:nil];
     });
 }
 

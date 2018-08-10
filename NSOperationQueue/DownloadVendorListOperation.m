@@ -70,7 +70,7 @@
         }
         
         self.vendorListVersion = [self vendorListVersion:vendorList];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"DidDownloadVendorList" object:nil userInfo:nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"DidDownloadVendorList" object:nil userInfo:@{@"vendorList" : vendorList}];
         [self completeOperation];
     }];
     

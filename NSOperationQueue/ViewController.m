@@ -30,11 +30,15 @@
         NSLog(@"DidReadVendorListFromBundle");
     }];
     
+    [[NSNotificationCenter defaultCenter] addObserverForName:@"NoInternetConnectivity" object:nil queue:NSOperationQueue.mainQueue usingBlock:^(NSNotification * _Nonnull note) {
+        NSLog(@"NoInternetConnectivity");
+    }];
+    
     [[NSNotificationCenter defaultCenter] addObserverForName:@"DidDownloadVendorList" object:nil queue:NSOperationQueue.mainQueue usingBlock:^(NSNotification * _Nonnull note) {
         NSLog(@"DidDownloadVendorList");
     }];
     
-    [[NSNotificationCenter defaultCenter] addObserverForName:@"VendorListDownloadTimedOut" object:nil queue:NSOperationQueue.mainQueue usingBlock:^(NSNotification * _Nonnull note) {
+    [[NSNotificationCenter defaultCenter] addObserverForName:@"VendorListDownloadFailed" object:nil queue:NSOperationQueue.mainQueue usingBlock:^(NSNotification * _Nonnull note) {
         NSLog(@"VendorListDownloadTimedOut");
     }];
     
@@ -42,8 +46,12 @@
         NSLog(@"DidDownloadPurposeList");
     }];
     
-    [[NSNotificationCenter defaultCenter] addObserverForName:@"PurposeListDownloadTimedOut" object:nil queue:NSOperationQueue.mainQueue usingBlock:^(NSNotification * _Nonnull note) {
+    [[NSNotificationCenter defaultCenter] addObserverForName:@"PurposeListDownloadFailed" object:nil queue:NSOperationQueue.mainQueue usingBlock:^(NSNotification * _Nonnull note) {
         NSLog(@"PurposeListDownloadTimedOut");
+    }];
+    
+    [[NSNotificationCenter defaultCenter] addObserverForName:@"PurposeListDownloadNotNecessary" object:nil queue:NSOperationQueue.mainQueue usingBlock:^(NSNotification * _Nonnull note) {
+        NSLog(@"PurposeListDownloadNotNecessary");
     }];
 }
 

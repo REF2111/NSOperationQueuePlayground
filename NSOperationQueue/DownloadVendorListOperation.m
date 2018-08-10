@@ -58,9 +58,7 @@
     NSURLSessionTask* task = [dlSession dataTaskWithRequest:req completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error){
         
         if (error) {
-            if (error.code == -1001) {
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"VendorListDownloadTimedOut" object:nil userInfo:nil];
-            }
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"VendorListDownloadFailed" object:nil userInfo:nil];
             [self cancel];
             return;
         }
@@ -69,6 +67,7 @@
                                                                    options:NSJSONReadingMutableContainers
                                                                      error:&serializationError];
         if (!vendorList) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"VendorListDownloadFailed" object:nil userInfo:nil];
             [self cancel];
             return;
         }

@@ -25,7 +25,7 @@
     NetworkStatus remoteHostStatus = [reachability currentReachabilityStatus];
     
     if (remoteHostStatus == NotReachable) {
-        NSLog(@"No internet connection");
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"NoInternetConnectivity" object:nil userInfo:nil];
         [self cancel];
         return;
     }

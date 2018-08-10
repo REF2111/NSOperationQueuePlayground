@@ -59,6 +59,7 @@
     }
     self.vendorListVersion = downloadVendorList.vendorListVersion;
     if (!self.vendorListVersion || [[[NSLocale currentLocale] languageCode] isEqualToString:@"en"]) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"PurposeListDownloadNotNecessary" object:nil userInfo:nil];
         [self cancel];
         return;
     }
@@ -80,9 +81,7 @@
     NSURLSessionTask* task = [dlSession dataTaskWithRequest:req completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error){
         
         if (error) {
-            if (error.code == -1001) {
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"PurposeListDownloadTimedOut" object:nil userInfo:nil];
-            }
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"PurposeListDownloadFailed" object:nil userInfo:nil];
             [self cancel];
             return;
         }
@@ -91,6 +90,7 @@
                                                                    options:NSJSONReadingMutableContainers
                                                                      error:&serializationError];
         if (!purposeList) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"PurposeListDownloadFailed" object:nil userInfo:nil];
             [self cancel];
             return;
         }

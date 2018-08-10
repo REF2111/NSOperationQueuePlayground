@@ -10,6 +10,7 @@
 
 #import "DownloadPurposeListOperation.h"
 #import "DownloadVendorListOperation.h"
+#import "InternetConnectivityCheckOperation.h"
 #import "ReadVendorListFromBundleOperation.h"
 
 
@@ -42,14 +43,17 @@
 
 - (void)doTheStuffTheRightWay
 {
+    InternetConnectivityCheckOperation* internetConnectivityCheck = [[InternetConnectivityCheckOperation alloc] init];
     ReadVendorListFromBundleOperation* readVendorListFromBundle = [[ReadVendorListFromBundleOperation alloc] init];
     DownloadVendorListOperation* downloadVendorList = [[DownloadVendorListOperation alloc] init];
     DownloadPurposeListOperation* downloadPurposeList = [[DownloadPurposeListOperation alloc] init];
     
+    [downloadVendorList addDependency:internetConnectivityCheck];
+    [downloadPurposeList addDependency:internetConnectivityCheck];
     [downloadPurposeList addDependency:downloadVendorList];
     
     NSOperationQueue* operationQueue = [[NSOperationQueue alloc] init];
-    [operationQueue addOperations:@[readVendorListFromBundle, downloadVendorList, downloadPurposeList] waitUntilFinished:NO];
+    [operationQueue addOperations:@[readVendorListFromBundle, internetConnectivityCheck, downloadVendorList, downloadPurposeList] waitUntilFinished:NO];
 }
 
 

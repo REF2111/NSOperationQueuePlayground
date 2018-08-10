@@ -18,6 +18,13 @@
 
 - (void) start;
 {
+    for (NSOperation* operation in self.dependencies) {
+        if (operation.isCancelled) {
+            [self cancel];
+            return;
+        }
+    }
+    
     if ([self isCancelled])
     {
         // Move the operation to the finished state if it is canceled.

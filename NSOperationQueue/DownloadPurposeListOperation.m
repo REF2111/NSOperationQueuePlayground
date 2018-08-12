@@ -21,8 +21,9 @@
 
 @implementation DownloadPurposeListOperation
 
-- (void) start;
+- (void)start
 {
+    NSLog(@"%s", __FUNCTION__);
     for (NSOperation* operation in self.dependencies) {
         if (operation.isCancelled) {
             [self cancel];
@@ -41,11 +42,13 @@
     [NSThread detachNewThreadSelector:@selector(main) toTarget:self withObject:nil];
     self._executing = YES;
     [self didChangeValueForKey:@"isExecuting"];
+    [self download];
     
 }
 
-- (void) main;
+- (void)main
 {
+    NSLog(@"%s", __FUNCTION__);
     if ([self isCancelled]) {
         return;
     }
@@ -67,12 +70,14 @@
 
 - (void)updateURL
 {
+    NSLog(@"%s", __FUNCTION__);
     NSString* languageCode = [[NSLocale currentLocale] languageCode];
     self.URL = [NSURL URLWithString:[NSString stringWithFormat:@"https://vendorlist.consensu.org/v-%lu/purposes-%@.json", self.vendorListVersion, languageCode]];
 }
 
 - (void)download
 {
+    NSLog(@"%s", __FUNCTION__);
     NSMutableURLRequest* req = [NSMutableURLRequest requestWithURL:self.URL];
     req.timeoutInterval = 3;
     NSURLSession* dlSession = NSURLSession.sharedSession;
@@ -99,7 +104,8 @@
             [self cancel];
             return;
         }
-        
+        NSLog(@"%@: finished downloading purpose list -> posting notification", self.class);
+
         [[NSNotificationCenter defaultCenter] postNotificationName:@"DidDownloadPurposeList" object:nil userInfo:@{@"purposeList" : purposeList}];
         [self completeOperation];
     }];
@@ -109,13 +115,14 @@
 
 - (void)cancel
 {
+    NSLog(@"%s", __FUNCTION__);
     [self willChangeValueForKey:@"isCancelled"];
     [self willChangeValueForKey:@"isExecuting"];
     [self willChangeValueForKey:@"isFinished"];
     
     self._cancelled = YES;
     self._executing = NO;
-    self._finished = YES;
+    self._finished  = YES;
     
     [self didChangeValueForKey:@"isCancelled"];
     [self didChangeValueForKey:@"isExecuting"];
@@ -124,23 +131,29 @@
 
 - (BOOL) isAsynchronous;
 {
+    NSLog(@"%s: %@", __FUNCTION__, @YES);
     return YES;
 }
+#define b2str(b) b ? @"YES" : @"NO"
 
 - (BOOL)isCancelled
 {
+    NSLog(@"%s: %@", __FUNCTION__, b2str(self._cancelled));
     return self._cancelled;
 }
 
 - (BOOL)isExecuting {
+    NSLog(@"%s: %@", __FUNCTION__, b2str(self._executing));
     return self._executing;
 }
 
 - (BOOL)isFinished {
+    NSLog(@"%s: %@", __FUNCTION__, b2str(self._finished));
     return self._finished;
 }
 
 - (void)completeOperation {
+    NSLog(@"%s", __FUNCTION__);
     [self willChangeValueForKey:@"isFinished"];
     [self willChangeValueForKey:@"isExecuting"];
     

@@ -17,6 +17,7 @@
 
 - (void)main
 {
+    NSLog(@"%s", __FUNCTION__);
     if ([self isCancelled]) {
         return;
     }

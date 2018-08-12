@@ -31,7 +31,7 @@
         }
     }
     
-    if ([self isCancelled])
+    if (self.isCancelled)
     {
         [self cancel];
         return;
@@ -42,42 +42,56 @@
     [NSThread detachNewThreadSelector:@selector(main) toTarget:self withObject:nil];
     self._executing = YES;
     [self didChangeValueForKey:@"isExecuting"];
+    
+    if (!self.gotVendorListVersion) {
+        [self cancel];
+        return;
+    }
     [self download];
     
 }
-
-- (void)main
+- (void)extractVendorListVersionFromDependencies
 {
-    NSLog(@"%s", __FUNCTION__);
-    if ([self isCancelled]) {
-        return;
-    }
     DownloadVendorListOperation* downloadVendorList;
     for (NSOperation* operation in self.dependencies) {
-        if ([operation isKindOfClass:[DownloadVendorListOperation class]]) {
+        if ([operation isKindOfClass:DownloadVendorListOperation.class]) {
             downloadVendorList = (DownloadVendorListOperation*)operation;
         }
     }
     self.vendorListVersion = downloadVendorList.vendorListVersion;
-    if (!self.vendorListVersion || [[[NSLocale currentLocale] languageCode] isEqualToString:@"en"]) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"PurposeListDownloadNotNecessary" object:nil userInfo:nil];
-        [self cancel];
-        return;
-    }
-    [self updateURL];
-    [self download];
 }
+
+- (BOOL)gotVendorListVersion
+{
+    [self extractVendorListVersionFromDependencies];
+    
+    if (!self.vendorListVersion) {
+        // in this scenario, find better notification name
+        [NSNotificationCenter.defaultCenter postNotificationName:@"PurposeListDownloadNotNecessary"
+                                                          object:nil];
+        return NO;
+    }
+    if ([NSLocale.currentLocale.languageCode isEqualToString:@"en"]) {
+        
+        [NSNotificationCenter.defaultCenter postNotificationName:@"PurposeListDownloadNotNecessary"
+                                                          object:nil];
+        return NO;
+    }
+    return YES;
+}
+
 
 - (void)updateURL
 {
     NSLog(@"%s", __FUNCTION__);
-    NSString* languageCode = [[NSLocale currentLocale] languageCode];
+    NSString* languageCode = NSLocale.currentLocale.languageCode;
     self.URL = [NSURL URLWithString:[NSString stringWithFormat:@"https://vendorlist.consensu.org/v-%lu/purposes-%@.json", self.vendorListVersion, languageCode]];
 }
 
 - (void)download
 {
     NSLog(@"%s", __FUNCTION__);
+    [self updateURL];
     NSMutableURLRequest* req = [NSMutableURLRequest requestWithURL:self.URL];
     req.timeoutInterval = 3;
     NSURLSession* dlSession = NSURLSession.sharedSession;
@@ -100,7 +114,7 @@
                                                                    options:NSJSONReadingMutableContainers
                                                                      error:&serializationError];
         if (!purposeList) {
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"PurposeListDownloadFailed" object:nil userInfo:nil];
+            [NSNotificationCenter.defaultCenter postNotificationName:@"PurposeListDownloadFailed" object:nil userInfo:nil];
             [self cancel];
             return;
         }

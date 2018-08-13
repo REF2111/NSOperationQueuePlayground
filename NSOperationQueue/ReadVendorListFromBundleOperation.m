@@ -17,8 +17,9 @@
 
 @implementation ReadVendorListFromBundleOperation
 
-- (void) start;
+- (void) start
 {
+    NSLog(@"%s", __FUNCTION__);
     if ([self isCancelled])
     {
         // Move the operation to the finished state if it is canceled.
@@ -36,8 +37,11 @@
     
 }
 
-- (void) main;
+// If you are implementing a concurrent operation, you are not required to
+// override this method but may do so if you plan to call it from your custom start method.
+- (void)main
 {
+    NSLog(@"%s", __FUNCTION__);
     if ([self isCancelled]) {
         return;
     }
@@ -46,6 +50,7 @@
 
 - (void)readVendorList
 {
+    NSLog(@"%s", __FUNCTION__);
     NSBundle* mainBundle = NSBundle.mainBundle;
     NSString* vendorListStr = @"Resources.bundle/vendorlist.json";
     NSString* vendorListPath = [mainBundle pathForResource:[vendorListStr stringByDeletingPathExtension] ofType:vendorListStr.pathExtension];
@@ -68,7 +73,7 @@
             [self cancel];
             return;
         }
-        
+        NSLog(@"%@: finished reading Vendorlist from bundle -> posting notification!", self.class);
         [[NSNotificationCenter defaultCenter] postNotificationName:@"DidReadVendorListFromBundle" object:nil userInfo:@{@"vendorList" : vendorList}];
         [self completeOperation];
     });
@@ -76,26 +81,30 @@
 
 - (void)cancel
 {
+    NSLog(@"%s", __FUNCTION__);
     [self willChangeValueForKey:@"isCancelled"];
     [self willChangeValueForKey:@"isExecuting"];
     [self willChangeValueForKey:@"isFinished"];
     
     self._cancelled = YES;
     self._executing = NO;
-    self._finished = YES;
+    self._finished  = YES;
     
     [self didChangeValueForKey:@"isCancelled"];
     [self didChangeValueForKey:@"isExecuting"];
     [self didChangeValueForKey:@"isFinished"];
 }
 
-- (BOOL) isAsynchronous;
+- (BOOL)isAsynchronous
 {
+    NSLog(@"%s: %@", __FUNCTION__, @"YES");
     return YES;
 }
 
+#define b2str(b) b ? @"YES" : @"NO"
 - (BOOL)isCancelled
 {
+    NSLog(@"%s: %@", __FUNCTION__, b2str(self._cancelled));
     return self._cancelled;
 }
 
@@ -104,6 +113,7 @@
 }
 
 - (BOOL)isFinished {
+    NSLog(@"%s: %@", __FUNCTION__, b2str(self._finished));
     return self._finished;
 }
 
@@ -112,16 +122,10 @@
     [self willChangeValueForKey:@"isExecuting"];
     
     self._executing = NO;
-    self._finished = YES;
+    self._finished  = YES;
     
     [self didChangeValueForKey:@"isExecuting"];
     [self didChangeValueForKey:@"isFinished"];
 }
 
 @end
-
-
-
-
-
-

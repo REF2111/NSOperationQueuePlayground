@@ -102,10 +102,10 @@ typedef enum {
 {
     InternetConnectivityCheckOperation* internetConnectivityCheck = [[InternetConnectivityCheckOperation alloc] init];
     ReadVendorListFromBundleOperation* readVendorListFromBundle = [[ReadVendorListFromBundleOperation alloc] init];
-    DownloadVendorListOperation* downloadVendorList = [[DownloadVendorListOperation alloc] init];
-    DownloadPurposeListOperation* downloadPurposeList = [[DownloadPurposeListOperation alloc] init];
+    DownloadVendorListOperation*       downloadVendorList       = [[DownloadVendorListOperation alloc] init];
+    DownloadPurposeListOperation*      downloadPurposeList      = [[DownloadPurposeListOperation alloc] init];
     
-    [downloadVendorList addDependency:internetConnectivityCheck];
+    [downloadVendorList  addDependency:internetConnectivityCheck];
     [downloadPurposeList addDependency:internetConnectivityCheck];
     [downloadPurposeList addDependency:downloadVendorList];
     
@@ -131,6 +131,7 @@ typedef enum {
 - (IBAction)startOperations:(UIButton *)sender {
     NSLog(@"");
     NSLog(@"");
+    NSLog(@"--> starting operations!");
     [self doTheStuffTheRightWay];
 }
 

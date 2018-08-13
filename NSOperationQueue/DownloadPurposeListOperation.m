@@ -21,8 +21,9 @@
 
 @implementation DownloadPurposeListOperation
 
-- (void) start;
+- (void)start
 {
+    NSLog(@"%s", __FUNCTION__);
     for (NSOperation* operation in self.dependencies) {
         if (operation.isCancelled) {
             [self cancel];
@@ -30,7 +31,7 @@
         }
     }
     
-    if ([self isCancelled])
+    if (self.isCancelled)
     {
         [self cancel];
         return;
@@ -42,37 +43,55 @@
     self._executing = YES;
     [self didChangeValueForKey:@"isExecuting"];
     
-}
-
-- (void) main;
-{
-    if ([self isCancelled]) {
+    if (!self.gotVendorListVersion) {
+        [self cancel];
         return;
     }
+    [self download];
+    
+}
+- (void)extractVendorListVersionFromDependencies
+{
     DownloadVendorListOperation* downloadVendorList;
     for (NSOperation* operation in self.dependencies) {
-        if ([operation isKindOfClass:[DownloadVendorListOperation class]]) {
+        if ([operation isKindOfClass:DownloadVendorListOperation.class]) {
             downloadVendorList = (DownloadVendorListOperation*)operation;
         }
     }
     self.vendorListVersion = downloadVendorList.vendorListVersion;
-    if (!self.vendorListVersion || [[[NSLocale currentLocale] languageCode] isEqualToString:@"en"]) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"PurposeListDownloadNotNecessary" object:nil userInfo:nil];
-        [self cancel];
-        return;
-    }
-    [self updateURL];
-    [self download];
 }
+
+- (BOOL)gotVendorListVersion
+{
+    [self extractVendorListVersionFromDependencies];
+    
+    if (!self.vendorListVersion) {
+        // in this scenario, find better notification name
+        [NSNotificationCenter.defaultCenter postNotificationName:@"PurposeListDownloadNotNecessary"
+                                                          object:nil];
+        return NO;
+    }
+    if ([NSLocale.currentLocale.languageCode isEqualToString:@"en"]) {
+        
+        [NSNotificationCenter.defaultCenter postNotificationName:@"PurposeListDownloadNotNecessary"
+                                                          object:nil];
+        return NO;
+    }
+    return YES;
+}
+
 
 - (void)updateURL
 {
-    NSString* languageCode = [[NSLocale currentLocale] languageCode];
+    NSLog(@"%s", __FUNCTION__);
+    NSString* languageCode = NSLocale.currentLocale.languageCode;
     self.URL = [NSURL URLWithString:[NSString stringWithFormat:@"https://vendorlist.consensu.org/v-%lu/purposes-%@.json", self.vendorListVersion, languageCode]];
 }
 
 - (void)download
 {
+    NSLog(@"%s", __FUNCTION__);
+    [self updateURL];
     NSMutableURLRequest* req = [NSMutableURLRequest requestWithURL:self.URL];
     req.timeoutInterval = 3;
     NSURLSession* dlSession = NSURLSession.sharedSession;
@@ -95,11 +114,12 @@
                                                                    options:NSJSONReadingMutableContainers
                                                                      error:&serializationError];
         if (!purposeList) {
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"PurposeListDownloadFailed" object:nil userInfo:nil];
+            [NSNotificationCenter.defaultCenter postNotificationName:@"PurposeListDownloadFailed" object:nil userInfo:nil];
             [self cancel];
             return;
         }
-        
+        NSLog(@"%@: finished downloading purpose list -> posting notification", self.class);
+
         [[NSNotificationCenter defaultCenter] postNotificationName:@"DidDownloadPurposeList" object:nil userInfo:@{@"purposeList" : purposeList}];
         [self completeOperation];
     }];
@@ -109,13 +129,14 @@
 
 - (void)cancel
 {
+    NSLog(@"%s", __FUNCTION__);
     [self willChangeValueForKey:@"isCancelled"];
     [self willChangeValueForKey:@"isExecuting"];
     [self willChangeValueForKey:@"isFinished"];
     
     self._cancelled = YES;
     self._executing = NO;
-    self._finished = YES;
+    self._finished  = YES;
     
     [self didChangeValueForKey:@"isCancelled"];
     [self didChangeValueForKey:@"isExecuting"];
@@ -124,23 +145,29 @@
 
 - (BOOL) isAsynchronous;
 {
+    NSLog(@"%s: %@", __FUNCTION__, @YES);
     return YES;
 }
+#define b2str(b) b ? @"YES" : @"NO"
 
 - (BOOL)isCancelled
 {
+    NSLog(@"%s: %@", __FUNCTION__, b2str(self._cancelled));
     return self._cancelled;
 }
 
 - (BOOL)isExecuting {
+    NSLog(@"%s: %@", __FUNCTION__, b2str(self._executing));
     return self._executing;
 }
 
 - (BOOL)isFinished {
+    NSLog(@"%s: %@", __FUNCTION__, b2str(self._finished));
     return self._finished;
 }
 
 - (void)completeOperation {
+    NSLog(@"%s", __FUNCTION__);
     [self willChangeValueForKey:@"isFinished"];
     [self willChangeValueForKey:@"isExecuting"];
     

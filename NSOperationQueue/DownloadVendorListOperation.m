@@ -17,8 +17,9 @@
 
 @implementation DownloadVendorListOperation
 
-- (void) start;
+- (void)start
 {
+    NSLog(@"%s", __FUNCTION__);
     for (NSOperation* operation in self.dependencies) {
         if (operation.isCancelled) {
             [self cancel];
@@ -26,29 +27,34 @@
         }
     }
     
-    if ([self isCancelled])
-    {
+    if (self.isCancelled) {
         [self cancel];
         return;
     }
     
     // If the operation is not canceled, begin executing the task.
     [self willChangeValueForKey:@"isExecuting"];
+    // WTF is this?
     [NSThread detachNewThreadSelector:@selector(main) toTarget:self withObject:nil];
     self._executing = YES;
     [self didChangeValueForKey:@"isExecuting"];
-}
-
-- (void) main;
-{
-    if ([self isCancelled]) {
-        return;
-    }
     [self download];
 }
 
+//If you are implementing a concurrent operation, you are not required to override
+// this method but may do so if you plan to call it from your custom start method.
+//- (void) main;
+//{
+//    NSLog(@"%s", __FUNCTION__);
+//    if ([self isCancelled]) {
+//        return;
+//    }
+//    [self download];
+//}
+
 - (void)download
 {
+    NSLog(@"%s", __FUNCTION__);
     NSURL* URL = [NSURL URLWithString:@"https://vendorlist.consensu.org/vendorlist.json"];
     NSMutableURLRequest* req = [NSMutableURLRequest requestWithURL:URL];
     req.timeoutInterval = 3;
@@ -71,6 +77,7 @@
         }
         
         self.vendorListVersion = [self vendorListVersion:vendorList];
+        NSLog(@"%@: finished downloading vendor list -> posting notification", self.class);
         [[NSNotificationCenter defaultCenter] postNotificationName:@"DidDownloadVendorList" object:nil userInfo:@{@"vendorList" : vendorList}];
         [self completeOperation];
     }];
@@ -80,12 +87,14 @@
 
 - (NSUInteger)vendorListVersion:(nonnull NSDictionary*)vendorList
 {
+    NSLog(@"%s", __FUNCTION__);
     NSUInteger vendorListVersion = [[vendorList objectForKey:@"vendorListVersion"] intValue];
     return vendorListVersion;
 }
 
 - (void)cancel
 {
+    NSLog(@"%s", __FUNCTION__);
     [self willChangeValueForKey:@"isCancelled"];
     [self willChangeValueForKey:@"isExecuting"];
     [self willChangeValueForKey:@"isFinished"];
@@ -99,25 +108,33 @@
     [self didChangeValueForKey:@"isFinished"];
 }
 
-- (BOOL) isAsynchronous;
+- (BOOL)isAsynchronous;
 {
+    NSLog(@"%s: YES", __FUNCTION__);
     return YES;
 }
-
+#define b2str(b) b ? @"YES" : @"NO"
 - (BOOL)isCancelled
 {
+    NSLog(@"%s: %@", __FUNCTION__, b2str(self._cancelled));
     return self._cancelled;
 }
 
-- (BOOL)isExecuting {
+- (BOOL)isExecuting
+{
+    NSLog(@"%s: %@", __FUNCTION__, b2str(self._executing));
     return self._executing;
 }
 
-- (BOOL)isFinished {
+- (BOOL)isFinished
+{
+    NSLog(@"%s: %@", __FUNCTION__, b2str(self._finished));
     return self._finished;
 }
 
-- (void)completeOperation {
+- (void)completeOperation
+{
+    NSLog(@"%s", __FUNCTION__);
     [self willChangeValueForKey:@"isFinished"];
     [self willChangeValueForKey:@"isExecuting"];
     

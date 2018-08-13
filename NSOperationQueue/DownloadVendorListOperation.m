@@ -35,7 +35,6 @@
     // If the operation is not canceled, begin executing the task.
     [self willChangeValueForKey:@"isExecuting"];
     // WTF is this?
-    [NSThread detachNewThreadSelector:@selector(main) toTarget:self withObject:nil];
     self._executing = YES;
     [self didChangeValueForKey:@"isExecuting"];
     [self download];
